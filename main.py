@@ -40,10 +40,9 @@ class Person():
             return None
 
     def __repr__(self) -> str:
-        	return  str(self.name)+str([ friend.id for friend in self.friends ])
+        	return  str(self.name)+" friends: "+str([ friend.name for friend in self.friends ])
 
-def most_common(lst):
-    return max(set(lst), key=lst.count)
+
 
 def get_top_k_recommended_friends(user_id: int, cutoff_k: int):
     recomemded = []
@@ -56,12 +55,13 @@ def get_top_k_recommended_friends(user_id: int, cutoff_k: int):
     for friend in person.get_friends():#iterate over the user list of friends
         current_friend = Person.get_user(friend)#for every friend evaluate candidates
         for candidate in current_friend.get_friends():
-            aux[candidate] = 0
             if user_id != candidate:#validates the person is not already friend of this candidate
-                aux[candidate] = aux[candidate] + 1 #count candidates frecuency
-
+                new_candidate = aux.get(candidate, None)
+                if new_candidate == None:
+                    aux[candidate] = 1
+                else:    
+                    aux[candidate] = aux[candidate] + 1 #count candidates frecuency
     
-
     def get_max(dict_items: dict):#function that gets de top index from a dictonary
         top = None
         topValue = 0
@@ -112,4 +112,4 @@ bob.add_friend(charlie)
 
 abel.add_friend(alessandro)
 
-print([Person.get_user(pana).name for pana in get_top_k_recommended_friends(alice.id, 4) ])
+print([Person.get_user(pana).name for pana in get_top_k_recommended_friends(samuel.id, 4) ])
