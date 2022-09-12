@@ -1,6 +1,3 @@
-from re import A
-
-
 def contains(list, filter):
     for x in list:
         if filter(x):
@@ -8,7 +5,6 @@ def contains(list, filter):
     return False
 
 class Person():
-
     all_users = []
 
     def __init__(self, name):
