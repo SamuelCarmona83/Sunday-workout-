@@ -52,26 +52,17 @@ def get_top_k_recommended_friends(user_id: int, cutoff_k: int):
     person = Person.get_user(user_id)
     #capture de person to get de list of friends for that user
     #iterarte over the user direct friends
-    for friend in person.get_friends():#iterate over the user list of friends
-        current_friend = Person.get_user(friend)#for every friend
-        #if len(recomemded) < cutoff_k:
-        for candidate in current_friend.get_friends():
-            if user_id != candidate:
-                recomemded.append(candidate)
-                
-    #at here you have at recommended a long list with the the reaped values of the more common friends
-    #now its matter of intarate over that list a retive the most commons under de cutoff value and return it
-    #most_recc
     aux = {}
-    for item in set(recomemded):
-        count = 0
-        for elm in recomemded:
-            if(item == elm):
-                count = count + 1
-        aux[item] = count    
+    for friend in person.get_friends():#iterate over the user list of friends
+        current_friend = Person.get_user(friend)#for every friend evaluate candidates
+        for candidate in current_friend.get_friends():
+            aux[candidate] = 0
+            if user_id != candidate:#validates the person is not already friend of this candidate
+                aux[candidate] = aux[candidate] + 1 #count candidates frecuency
+
     
 
-    def get_max(dict_items: dict):
+    def get_max(dict_items: dict):#function that gets de top index from a dictonary
         top = None
         topValue = 0
         for key, value in dict_items.items():
@@ -80,18 +71,18 @@ def get_top_k_recommended_friends(user_id: int, cutoff_k: int):
                 topValue = value
         return top
 
-    for leader in range(0,cutoff_k):
-        if(leader - 1>= len(aux.items())):
+    for leader in range(0,cutoff_k):#reatrive only the n elements of recomendations
+        if(leader - 1>= len(aux.items())):#verify if already has fill the query
             return most_repeated
-        max_item = get_max(aux)
-        if(max_item == None):
+        max_item = get_max(aux)#get the most valuable candidate
+        if(max_item == None):#verify if the user has no friends
             return []
-        max_value = aux.pop(max_item)
+        max_value = aux.pop(max_item)#remove the candidate from the aux dictionary
         if leader < cutoff_k:
-            most_repeated.append(max_item)
+            most_repeated.append(max_item)#append the candidate to the list of most_repeated person and return
     return most_repeated
 
-
+#just testing
 alice = Person("Alice")
 dan = Person("Dan")
 bob = Person("Bob")
@@ -106,6 +97,7 @@ samuel = Person("Samuel")
 
 
 dan.add_friend(eve)
+dan.add_friend(ivan)
 dan.add_friend(alessandro)
 
 
@@ -120,4 +112,4 @@ bob.add_friend(charlie)
 
 abel.add_friend(alessandro)
 
-print([Person.get_user(pana).name for pana in get_top_k_recommended_friends(samuel.id, 2) ])
+print([Person.get_user(pana).name for pana in get_top_k_recommended_friends(alice.id, 4) ])
